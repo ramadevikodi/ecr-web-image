@@ -18,4 +18,4 @@ AWS_SECRET_ACCESS_KEY: <AWS_SECRET_ACCESS_KEY>
         ECR_REPOSITORY: ecr-web-image
         IMAGE_TAG: ${{ github.sha }}
 ```
-- For every commmmmit to master, a new docker image tagged with git sha of commit will be pushed to ECR.
+- For every new commmmmit to master, a new docker image tagged with git sha of commit will be pushed to ECR.
