@@ -1,4 +1,6 @@
-FROM php:7.2-apache
-COPY ./web/ /var/www/html/
-EXPOSE 80
-CMD ["apachectl", "-D", "FOREGROUND"]
+FROM openjdk:11
+MAINTAINER "Ashok Bollepalli <797979>"
+COPY target/spring-boot-docker-app.jar  /usr/app/
+WORKDIR /usr/app/
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "spring-boot-docker-app.jar"]

@@ -1,21 +1,17 @@
-# Push Dockerimage to AWS ECR
+  
+# Simple Spring Boot with Docker Application#
 
-- Create docker repository on ECR, lets say. `ecr-web-image` on https://console.aws.amazon.com/ecr/repositories?region=us-east-1.
 
-- Add secrets in your repository.
+Build the image using the following command
 
+```bash
+$ docker build -t spring-boot-rest-api .
 ```
-AWS_ACCESS_KEY_ID: <AWS_ACCESS_KEY_ID>
-AWS_SECRET_ACCESS_KEY: <AWS_SECRET_ACCESS_KEY>
+Run the Docker container using the command shown below.
+
+```bash
+$ docker run -d -p 8080:8080 spring-boot-rest-api
 ```
 
-- Specify ECR_REPOSITORY_NAME in `.github/workflows/docker-image.yml`. In this case, `ecr-web-image`.
+The application will be accessible at http://localhost:8080/
 
-```
-- name: Build, tag, and push image to Amazon ECR
-    env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: ecr-web-image
-        IMAGE_TAG: ${{ github.sha }}
-```
-- For every new commmmmit to master, a new docker image tagged with git sha of commit will be pushed to ECR.
