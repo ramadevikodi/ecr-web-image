@@ -3,7 +3,7 @@
     "containerDefinitions": [
         {
             "name": "testspring",
-            "image": "127214170915.dkr.ecr.us-east-1.amazonaws.com/docker_springboot_demo:test_sb_image1",
+            "image": "127214170915.dkr.ecr.us-east-1.amazonaws.com/docker_springboot_demo:test_sb_image3",
             "cpu": 0,
             "portMappings": [
                 {
