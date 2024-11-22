@@ -46,7 +46,8 @@
       with:
         task-definition: task-definition.json 
         container-name: test_sb_image1
-        image: ${{ steps.build-image.outputs.image }}
+        image: springbootdocker
+        //image: ${{ steps.build-image.outputs.image }}
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1 
       with:
