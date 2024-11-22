@@ -1,22 +1,22 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:127214170915:task-definition/onespacetaskdefinition:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:127214170915:task-definition/devtaskdefinition:1",
     "containerDefinitions": [
         {
-            "name": "springboot",
-            "image": "127214170915.dkr.ecr.ap-south-1.amazonaws.com/dev/my-dcoker-repo:latest",
+            "name": "testspring",
+            "image": "127214170915.dkr.ecr.us-east-1.amazonaws.com/docker_springboot_demo:test_sb_image1",
             "cpu": 0,
             "portMappings": [
                 {
-                    "name": "springboot-80-tcp",
+                    "name": "testspring-80-tcp",
                     "containerPort": 80,
                     "hostPort": 80,
                     "protocol": "tcp",
                     "appProtocol": "http"
                 },
                 {
-                    "name": "springboot-8089-tcp",
-                    "containerPort": 8089,
-                    "hostPort": 8089,
+                    "name": "testspring-8080-tcp",
+                    "containerPort": 8080,
+                    "hostPort": 8080,
                     "protocol": "tcp",
                     "appProtocol": "http"
                 }
@@ -30,11 +30,11 @@
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
-                    "awslogs-group": "/ecs/onespacetaskdefinition",
+                    "awslogs-group": "/ecs/devtaskdefinition",
                     "mode": "non-blocking",
                     "awslogs-create-group": "true",
                     "max-buffer-size": "25m",
-                    "awslogs-region": "ap-south-1",
+                    "awslogs-region": "us-east-1",
                     "awslogs-stream-prefix": "ecs"
                 },
                 "secretOptions": []
@@ -42,7 +42,7 @@
             "systemControls": []
         }
     ],
-    "family": "onespacetaskdefinition",
+    "family": "devtaskdefinition",
     "taskRoleArn": "arn:aws:iam::127214170915:role/ecsrole",
     "executionRoleArn": "arn:aws:iam::127214170915:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
@@ -89,13 +89,13 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "1024",
-    "memory": "3072",
+    "cpu": "256",
+    "memory": "512",
     "runtimePlatform": {
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-11-22T06:35:52.572Z",
+    "registeredAt": "2024-11-22T13:16:53.189Z",
     "registeredBy": "arn:aws:iam::127214170915:root",
     "tags": []
 }
