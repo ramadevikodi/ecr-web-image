@@ -1,11 +1,11 @@
  name: Deploy to ECR
 
-on:
+ on:
  
-  push:
+   push:
     branches: [ main ]
 
-jobs:
+ jobs:
   
   build:
     
