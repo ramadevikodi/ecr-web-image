@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:127214170915:task-definition/devtaskdefinition:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:127214170915:task-definition/devtaskdefinition:3",
     "containerDefinitions": [
         {
             "name": "testspring",
