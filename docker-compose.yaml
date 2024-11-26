@@ -9,5 +9,5 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_URL: my-db-springboot.cphjaxjsdjed.us-east-1.rds.amazonaws.com
+      POSTGRES_URL: http://localhost:5432
       POSTGRES_PORT: 5432
