@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: ./Source
+    ports:
+      - "8080:8080"
+    # Add AWS RDS db credentials here
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_URL: jdbc:postgresql://localhost:5432
+      POSTGRES_PORT: 5432
