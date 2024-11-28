@@ -57,7 +57,7 @@ jobs:
           version: '1.29.2'
       - name: Build and run services
         run: |
-          docker-compose up --build                 
+          docker-compose up --build -d               
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
