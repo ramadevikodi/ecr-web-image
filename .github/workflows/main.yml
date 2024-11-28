@@ -14,16 +14,18 @@ on:
                     required: true
                aws-secret-access-key:
                     type: string
-                    description: 'aws-secret-access-key'  
-                    required: true              
+                    description: 'secret-access-key-id'
+                    required: true
+                    
+               
+                       
 jobs:  
   build:    
     name: Build Image
     runs-on: ubuntu-latest
     steps:     
       - name: Check out code
-        uses: actions/checkout@v2
-    
+        uses: actions/checkout@v2    
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
