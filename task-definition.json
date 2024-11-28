@@ -1,23 +1,23 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:127214170915:task-definition/testdefinition:2",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:127214170915:task-definition/testdefinition:1",
     "containerDefinitions": [
         {
             "name": "testdefinition",
-            "image": "127214170915.dkr.ecr.us-east-1.amazonaws.com/docker_springboot_demo:docker_springboot_demo:latest",
+            "image": "127214170915.dkr.ecr.us-east-1.amazonaws.com/dev/sbpg:a5567694e2324d1948aff98ff5c687fddd1d864f",
             "cpu": 0,
             "portMappings": [
                 {
+                    "name": "testdefinition-80-tcp",
                     "containerPort": 80,
                     "hostPort": 80,
                     "protocol": "tcp",
-                    "name": "testdefinition-80-tcp",
                     "appProtocol": "http"
                 },
                 {
+                    "name": "testdefinition-8080-tcp",
                     "containerPort": 8080,
                     "hostPort": 8080,
                     "protocol": "tcp",
-                    "name": "testdefinition-8080-tcp",
                     "appProtocol": "http"
                 }
             ],
@@ -86,15 +86,16 @@
         "EC2",
         "FARGATE"
     ],
-    "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
-    },
     "requiresCompatibilities": [
         "FARGATE"
     ],
     "cpu": "256",
     "memory": "512",
-    "registeredAt": "2024-11-22T13:16:53.189000+00:00",
-    "registeredBy": "arn:aws:iam::127214170915:root"
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-11-28T06:01:08.890Z",
+    "registeredBy": "arn:aws:iam::127214170915:root",
+    "tags": []
 }
