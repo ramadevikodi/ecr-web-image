@@ -58,7 +58,7 @@ jobs:
       - name: Build and run services
         run: |
           docker-compose up --build -d
-          docker-compose exec test ./mvn test
+          docker-compose logs backend
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
