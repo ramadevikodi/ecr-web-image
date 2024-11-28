@@ -2,7 +2,7 @@ version: "3.8"
 services:
   backend:
     build:
-      context: ./Source
+      context: .
     ports:
       - "8080:8080"
     # Add AWS RDS db credentials here
