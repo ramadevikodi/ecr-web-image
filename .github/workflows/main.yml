@@ -15,8 +15,7 @@ on:
                aws-secret-access-key:
                     type: string
                     description: 'secret-access-key-id'
-                    required: true
-                    
+                    required: true               
                
                        
 jobs:  
@@ -32,7 +31,20 @@ jobs:
           aws-access-key-id:  ${{ github.event.inputs.aws-access-key-id }}
           aws-secret-access-key: ${{ github.event.inputs.aws-secret-access-key }}
           aws-region: ${{ github.event.inputs.aws-region }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: docker_springboot_demo
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
    
         
 
