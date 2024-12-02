@@ -45,6 +45,17 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Get Secrets from AWS Secrets Manager
+        id: get-secrets
+        uses: aws-actions/secrets-manager-get-secret-value@v1
+        with:
+          secret-id: my-secret-id
+      - name: Deploy to Production
+        env:
+          MY_SECRET: ${{ steps.get-secrets.outputs.secretValue }}
+        run: |       
+          echo "Secret value: $MY_SECRET"
+      # Add your deployment commands here
       #- name: docker compose
         #uses: adrielcodeco/docker-compose-run-action@v1
         #with:
