@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS CloudFormation template to create an RDS PostgreSQL database with specific configurations'
+
+Parameters:
+  Environment:
+    Type: String
+    Description: 'The environment for the database (e.g., ct, prod)'
+    AllowedValues:
+      - dev
+      - ct
+      - prod
+    Default: dev
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The VPC to deploy into
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of subnet IDs to assign to the database
+    Default:
+      - subnet-12345678
+      - subnet-87654321
+  DatabaseSecurityGroup:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+          GroupDescription: "Sample DB init DB security group"
+          VpcId: !Ref VpcId
+          SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 5432
+            ToPort: 5432
+            CidrIp: 0.0.0.0/0
+
+
+Resources:
+  DBUsername:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: !Sub 'onespace-${Environment}-db-username'
+      SecretString: '{"username":"admin"}'
+
+  DBPassword:
+    Type: 'AWS::SecretsManager::Secret'
+    Properties:
+      Name: !Sub 'onespace-${Environment}-db-password'
+      SecretString: '{"password":"password123"}'
+  MyDBSubnetGroup:
+    Type: 'AWS::RDS::DBSubnetGroup'
+    Properties: 
+      DBSubnetGroupDescription: 'Subnet group for RDS instance'
+      SubnetIds: !Ref SubnetIds
+       
+  MyDBInstance:
+    Type: 'AWS::RDS::DBInstance'
+    Properties:
+      DBInstanceIdentifier: !Sub 'onespace-${Environment}-database'
+      AllocatedStorage: '75'
+      DBInstanceClass: 'db.m5d.large'
+      Engine: 'postgres'
+      EngineVersion: '13.3'
+      MasterUsername: !Ref DBUsername
+      MasterUserPassword: !Ref DBPassword
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+      MultiAZ: !If [IsProd, true, false]
+      PubliclyAccessible: false
+      StorageType: 'gp2'
+      StorageEncrypted: true
+      BackupRetentionPeriod: 7
+      PreferredBackupWindow: '07:00-09:00'
+      PreferredMaintenanceWindow: 'Mon:00:00-Mon:03:00'
+      EnableStorageAutoscaling: true
+      MaxAllocatedStorage: 100
+      Tags:
+        - Key: 'Name'
+          Value: !Sub 'onespace-${Environment}-database'
+
+Conditions:
+  IsProd: !Equals [!Ref Environment, prod]
+
+Outputs:
+  DBInstanceEndpoint:
+    Description: 'The endpoint address of the RDS instance'
+    Value: !GetAtt 
+      - MyDBInstance
+      - Endpoint.Address
+  DBInstancePort:
+    Description: 'The port number on which the database accepts connections'
+    Value: !GetAtt 
+      - MyDBInstance
+      - Endpoint.Port
+
+ 
