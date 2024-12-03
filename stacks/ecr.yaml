@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: This template creates ECR resources
+
+Parameters:
+  IAMUserName:
+    Type: String
+    Description: IAM User Name
+    Default: ramadevi
+    AllowedPattern: "[a-zA-Z0-9-_]+"
+    ConstraintDescription: must be a valid IAM user name  
+
+Resources:
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref AWS::StackName
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowPushPull"
+            Effect: Allow
+            Principal:
+              AWS:
+                !Join [
+                  "",
+                  [
+                    "arn:aws:iam::",
+                    !Ref AWS::AccountId,
+                    ":user/",
+                    !Ref IAMUserName
+                  ],
+                ]
+            Action:
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
+
+Outputs:
+  ECRRepository:
+    Description: ECR repository
+    Value: !Ref ECRRepository
