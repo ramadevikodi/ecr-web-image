@@ -11,3 +11,6 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_URL: jdbc:postgresql://localhost:5432
       POSTGRES_PORT: 5432
+    volumes:
+      - C:\postgres_datapart:/var/lib/postgresql/data
+    restart: always
