@@ -1,97 +1,43 @@
-name: Onespace-core-apps-deployment-to-DEV
+
+name: Java Maven Build & Publish Artifact
+
 on:
-  workflow_dispatch:
-    inputs:
-               aws-region:
-                    type: choice
-                    description: 'region'
-                    required: true
-                    options:
-                         - 'us-east-1'
-               aws-access-key-id:
-                    type: string
-                    description: 'aws-access-key-id'
-                    required: true
-               aws-secret-access-key:
-                    type: string
-                    description: 'secret-access-key-id'
-                    required: true               
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+   
+  publish-job:
+    runs-on: ubuntu-latest
+    needs: build_test
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - run: mvn --batch-mode --update-snapshots verify
+    - run: mkdir staging && cp target/*.jar staging
+    - uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: staging              
                
                        
-jobs:  
-  build:    
-    name: Build Image
-    runs-on: ubuntu-latest
-    steps:     
-      - name: Check out code
-        uses: actions/checkout@v2        
-
-      # Setup JDK 1.8
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-          server-id: github
-          settings-path: ${{ github.workspace }}
-      - name: Build and Test with Maven
-        run: mvn clean install -DskipTests
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id:  ${{ github.event.inputs.aws-access-key-id }}
-          aws-secret-access-key: ${{ github.event.inputs.aws-secret-access-key }}
-          aws-region: ${{ github.event.inputs.aws-region }}
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: docker_springboot_demo
-          IMAGE_TAG: develop
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-      - name: Get Secrets from AWS Secrets Manager
-        id: get-secrets
-        uses: aws-actions/secrets-manager-get-secret-value@v1
-        with:
-          secret-id: my-secret-id
-      - name: Deploy to Production
-        env:
-          MY_SECRET: ${{ steps.get-secrets.outputs.secretValue }}
-        run: |       
-          echo "Secret value: $MY_SECRET"
-      # Add your deployment commands here
-      #- name: docker compose
-        #uses: adrielcodeco/docker-compose-run-action@v1
-        #with:
-          #compose-file: './docker-compose.yaml'
-          #service: backend
-
-      - name: Set up Docker Compose
-        uses: KengoTODA/actions-setup-docker-compose@v1
-        with:
-          version: '1.29.2'
-      - name: Build and run services
-        run: |
-          docker-compose up --build -d
-          docker-compose logs backend
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: testdefinition
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1 
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: testdefintion 
-          cluster: testdefinition
-          wait-for-service-stability: true
